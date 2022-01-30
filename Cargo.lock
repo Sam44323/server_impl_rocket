@@ -831,6 +831,7 @@ dependencies = [
  "rocket_codegen",
  "rocket_http",
  "serde",
+ "serde_json",
  "state",
  "tempfile",
  "time",
@@ -970,6 +971,7 @@ name = "server_impl_rocket"
 version = "0.1.0"
 dependencies = [
  "rocket",
+ "serde",
 ]
 
 [[package]]
