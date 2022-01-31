@@ -46,7 +46,7 @@ fn fetch_all_todo_items() -> Result<Json<ToDoList>, String> {
 
     match result {
         Ok(items) => {
-            let collection: rusqlite::Result<Vec<_>> = items.collect();
+            let collection: Result<Vec<_>> = items.collect();
 
             match collection {
                 Ok(items) => Ok(Json(ToDoList { items })),
