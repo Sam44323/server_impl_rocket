@@ -57,6 +57,32 @@ fn fetch_all_todo_items() -> Result<Json<ToDoList>, String> {
     }
 }
 
+#[post("/add", data = "<item>", format = "json")]
+fn add_todo_item(item: Json<String>) -> Result<Json<StatusMessage>, String> {
+    let db_connection = match Connection::open("data.sqlite") {
+        Ok(connection) => connection,
+        Err(_) => return Err("Failed to connect to the database!".into()),
+    };
+
+    let mut statement =
+        match db_connection.prepare("insert into todo_list (id, item) values (null, $1);") {
+            Ok(statement) => statement,
+            Err(_) => return Err("Failed to prepare query".into()),
+        };
+
+    let result = statement.execute(&[&item.0]); // .0 gives the data
+
+    match result {
+        Ok(rows_affected) => {
+            return Ok(StatusMessage {
+                message: format!("{} rows affected", rows_affected),
+            }
+            .into())
+        }
+        Err(_) => Err("Failed to insert todo item!".into()),
+    }
+}
+
 #[launch]
 fn rocket() -> _ {
     {
@@ -72,5 +98,5 @@ fn rocket() -> _ {
             )
             .unwrap();
     }
-    rocket::build().mount("/", routes![index, fetch_all_todo_items])
+    rocket::build().mount("/", routes![index, fetch_all_todo_items, add_todo_item])
 }
