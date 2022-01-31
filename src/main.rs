@@ -1,7 +1,5 @@
 #[macro_use]
 extern crate rocket;
-use rocket::serde::json::Json;
-use serde::Deserialize;
 
 #[get("/test")]
 fn index() -> &'static str {
@@ -10,5 +8,5 @@ fn index() -> &'static str {
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![index, add_todo])
+    rocket::build().mount("/", routes![index])
 }
