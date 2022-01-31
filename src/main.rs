@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate rocket;
+use rocket::serde::json::Json;
 use rusqlite::*;
 use serde::*;
 
@@ -24,6 +25,38 @@ fn index() -> &'static str {
     "Testing the server😁"
 }
 
+#[get("/todos")]
+fn fetch_all_todo_items() -> Result<Json<ToDoList>, String> {
+    let db_connection = match Connection::open("data.sqlite") {
+        Ok(connection) => connection,
+        Err(_) => return Err("Failed to connect to the database!".into()),
+    };
+
+    let mut statement = match db_connection.prepare("SELECT id, title FROM todo_list;") {
+        Ok(statement) => statement,
+        Err(_) => return Err("Failed to prepare the statement!".into()),
+    };
+
+    let result = statement.query_map([], |row| {
+        Ok(ToDoItem {
+            id: row.get(0)?, // this ? will automatically return and error if the value is not found
+            title: row.get(1)?,
+        })
+    });
+
+    match result {
+        Ok(items) => {
+            let collection: rusqlite::Result<Vec<_>> = items.collect();
+
+            match collection {
+                Ok(items) => Ok(Json(ToDoList { items })),
+                Err(_) => Err("Failed to fetch todo items!".into()),
+            }
+        }
+        Err(_) => Err("Failed to fetch todo items!".into()),
+    }
+}
+
 #[launch]
 fn rocket() -> _ {
     let db_connection = Connection::open("data.sqlite").unwrap();
@@ -38,5 +71,5 @@ fn rocket() -> _ {
         )
         .unwrap();
 
-    rocket::build().mount("/", routes![index])
+    rocket::build().mount("/", routes![index, fetch_all_todo_items])
 }

@@ -9,5 +9,4 @@ edition = "2018"
 rocket = {version = "0.5.0-rc.1", features = ["json"]}
 serde = {version = "1.0.136", features = ["derive"]}
 rusqlite = {version = "0.26.3", features = ["bundled"]}
-rocket_contrib = {version = "0.4.10", features = ["json"]}
 serde_json = "1.0.78"
