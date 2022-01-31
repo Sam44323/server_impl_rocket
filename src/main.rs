@@ -11,7 +11,7 @@ fn rocket() -> _ {
     database::connect_db();
 
     rocket::build().mount(
-        "/",
+        "/api",
         routes![
             routes::index,
             routes::fetch_all_todo_items,
