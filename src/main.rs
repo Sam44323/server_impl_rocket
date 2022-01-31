@@ -13,7 +13,7 @@ fn rocket() -> _ {
 
     db_connection
         .execute(
-            "create table if not exists todo_list (id integer primary key item varchar(255) no null)",
+            "create table if not exists todo_list (id integer primary key, item varchar(255) not null)",
             [],
         )
         .unwrap();
