@@ -3,10 +3,18 @@ use rusqlite::*;
 
 mod data;
 
+/**
+ * Route for testing-api uptime
+ */
+
 #[get("/")]
 pub fn index() -> &'static str {
   "Testing the server"
 }
+
+/**
+ * Route for getting all the todo
+ */
 
 #[get("/todos")]
 pub fn fetch_all_todo_items() -> Result<Json<data::ToDoList>, String> {
@@ -40,6 +48,10 @@ pub fn fetch_all_todo_items() -> Result<Json<data::ToDoList>, String> {
   }
 }
 
+/**
+ * Route for adding a new todo
+ */
+
 #[post("/add", data = "<item>", format = "json")]
 pub fn add_todo_item(item: Json<String>) -> Result<Json<data::StatusMessage>, String> {
   let db_connection = match Connection::open("data.sqlite") {
@@ -67,6 +79,10 @@ pub fn add_todo_item(item: Json<String>) -> Result<Json<data::StatusMessage>, St
     Err(_) => Err("Failed to insert todo item!".into()),
   }
 }
+
+/**
+ * Route for deleting a todo
+ */
 
 #[delete("/todo/<id>")]
 pub fn delete_todo_item(id: i64) -> Result<Json<data::StatusMessage>, String> {
