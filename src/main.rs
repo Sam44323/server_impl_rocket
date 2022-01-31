@@ -83,6 +83,31 @@ fn add_todo_item(item: Json<String>) -> Result<Json<StatusMessage>, String> {
     }
 }
 
+#[delete("/todo/<id>")]
+fn delete_todo_item(id: i64) -> Result<Json<StatusMessage>, String> {
+    let db_connection = match Connection::open("data.sqlite") {
+        Ok(connection) => connection,
+        Err(_) => return Err("Failed to connect to the database!".into()),
+    };
+
+    let mut statement = match db_connection.prepare("delete from todo_list where id = $1;") {
+        Ok(statement) => statement,
+        Err(_) => return Err("Failed to prepare query".into()),
+    };
+
+    let result = statement.execute(&[&id]); // .0 gives the data
+
+    match result {
+        Ok(rows_affected) => {
+            return Ok(StatusMessage {
+                message: format!("{} rows affected", rows_affected),
+            }
+            .into())
+        }
+        Err(_) => Err("Failed to insert todo item!".into()),
+    }
+}
+
 #[launch]
 fn rocket() -> _ {
     {
@@ -98,5 +123,8 @@ fn rocket() -> _ {
             )
             .unwrap();
     }
-    rocket::build().mount("/", routes![index, fetch_all_todo_items, add_todo_item])
+    rocket::build().mount(
+        "/",
+        routes![index, fetch_all_todo_items, add_todo_item, delete_todo_item],
+    )
 }
