@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate rocket;
+use rusqlite;
 
 #[get("/test")]
 fn index() -> &'static str {
@@ -8,5 +9,6 @@ fn index() -> &'static str {
 
 #[launch]
 fn rocket() -> _ {
+    let db_connection = rusqlite::Connection::open("data.sqlite").unwrap();
     rocket::build().mount("/", routes![index])
 }
