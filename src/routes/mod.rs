@@ -3,6 +3,11 @@ use rusqlite::*;
 
 mod data;
 
+#[get("/")]
+pub fn index() -> &'static str {
+  "Testing the server"
+}
+
 #[get("/todos")]
 pub fn fetch_all_todo_items() -> Result<Json<data::ToDoList>, String> {
   let db_connection = match Connection::open("data.sqlite") {
