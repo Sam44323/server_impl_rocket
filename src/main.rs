@@ -1,24 +1,15 @@
 #[macro_use]
 extern crate rocket;
-use rusqlite::*;
 
 mod routes;
 
+mod database;
+
 #[launch]
 fn rocket() -> _ {
-    {
-        let db_connection = Connection::open("data.sqlite").unwrap();
+    // connecting to database
+    database::connect_db();
 
-        db_connection
-            .execute(
-                "create table if not exists todo_list 
-                (id integer primary key,
-                item varchar(255) not null
-                    );",
-                [],
-            )
-            .unwrap();
-    }
     rocket::build().mount(
         "/",
         routes![
