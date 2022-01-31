@@ -1,6 +1,23 @@
 #[macro_use]
 extern crate rocket;
-use rusqlite;
+use rusqlite::*;
+use serde::*;
+
+#[derive(Serialize)] // converting object to stream of bytes and then converting to actual data using deserialize
+struct ToDoList {
+    items: Vec<ToDoItem>,
+}
+
+#[derive(Serialize)]
+struct ToDoItem {
+    id: i64,
+    title: String,
+}
+
+#[derive(Serialize)]
+struct StatusMessage {
+    message: String,
+}
 
 #[get("/test")]
 fn index() -> &'static str {
@@ -9,7 +26,7 @@ fn index() -> &'static str {
 
 #[launch]
 fn rocket() -> _ {
-    let db_connection = rusqlite::Connection::open("data.sqlite").unwrap();
+    let db_connection = Connection::open("data.sqlite").unwrap();
 
     db_connection
         .execute(
