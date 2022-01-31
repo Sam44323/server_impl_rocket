@@ -4,6 +4,8 @@ use rocket::serde::json::Json;
 use rusqlite::*;
 use serde::*;
 
+mod routes;
+
 #[derive(Serialize)] // converting object to stream of bytes and then converting to actual data using deserialize
 struct ToDoList {
     items: Vec<ToDoItem>,
