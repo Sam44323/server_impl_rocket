@@ -16,7 +16,7 @@ fn rocket() -> _ {
             "create table if not exists todo_list 
             (id integer primary key,
             item varchar(255) not null
-        )",
+        );",
             [],
         )
         .unwrap();
