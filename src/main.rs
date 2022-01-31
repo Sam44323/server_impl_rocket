@@ -12,7 +12,7 @@ struct ToDoList {
 #[derive(Serialize)]
 struct ToDoItem {
     id: i64,
-    title: String,
+    item: String,
 }
 
 #[derive(Serialize)]
@@ -32,15 +32,15 @@ fn fetch_all_todo_items() -> Result<Json<ToDoList>, String> {
         Err(_) => return Err("Failed to connect to the database!".into()),
     };
 
-    let mut statement = match db_connection.prepare("SELECT id, title FROM todo_list;") {
+    let mut statement = match db_connection.prepare("select id, item from todo_list;") {
         Ok(statement) => statement,
-        Err(_) => return Err("Failed to prepare the statement!".into()),
+        Err(_) => return Err("Failed to prepare query".into()),
     };
 
     let result = statement.query_map([], |row| {
         Ok(ToDoItem {
             id: row.get(0)?, // this ? will automatically return and error if the value is not found
-            title: row.get(1)?,
+            item: row.get(1)?,
         })
     });
 
@@ -59,17 +59,18 @@ fn fetch_all_todo_items() -> Result<Json<ToDoList>, String> {
 
 #[launch]
 fn rocket() -> _ {
-    let db_connection = Connection::open("data.sqlite").unwrap();
+    {
+        let db_connection = Connection::open("data.sqlite").unwrap();
 
-    db_connection
-        .execute(
-            "create table if not exists todo_list 
-            (id integer primary key,
-            item varchar(255) not null
-        );",
-            [],
-        )
-        .unwrap();
-
+        db_connection
+            .execute(
+                "create table if not exists todo_list 
+                (id integer primary key,
+                item varchar(255) not null
+                    );",
+                [],
+            )
+            .unwrap();
+    }
     rocket::build().mount("/", routes![index, fetch_all_todo_items])
 }
