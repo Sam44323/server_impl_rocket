@@ -22,7 +22,7 @@ pub fn fetch_all_todo_items() -> Result<Json<data::ToDoList>, String> {
 
   let result = statement.query_map([], |row| {
     Ok(data::ToDoItem {
-      id: row.get(0)?, // this ? will automatically return and error if the value is not found
+      id: row.get(0)?, // this ? will automatically return an error if the value is not found
       item: row.get(1)?,
     })
   });
