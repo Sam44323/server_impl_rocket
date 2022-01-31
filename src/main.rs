@@ -10,5 +10,13 @@ fn index() -> &'static str {
 #[launch]
 fn rocket() -> _ {
     let db_connection = rusqlite::Connection::open("data.sqlite").unwrap();
+
+    db_connection
+        .execute(
+            "create table if not exists todo_list (id integer primary key)",
+            [],
+        )
+        .unwrap();
+
     rocket::build().mount("/", routes![index])
 }
