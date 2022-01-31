@@ -6,7 +6,7 @@ _Server implementation code with rocket_
 
 ---
 
-### **Tech-stack**
+### **Tech-stacks**
 
 - Rust
 - Rusqlite
