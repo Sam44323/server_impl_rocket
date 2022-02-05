@@ -1,6 +1,6 @@
 # Server implementation with rocket
 
-_Server implementation for rust with rocket_
+_Server-implementation for rust with rocket_
 
 ![Rust](https://img.shields.io/badge/-Rust-333333?style=for-the-badge&logo=rust&logoColor=61dbfb)
 
