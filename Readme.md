@@ -12,8 +12,8 @@ _Server-implementation for rust with rocket_
 - Rusqlite
 - Rocket
 - Serde
-- Serde_json
 - Cargo
+- Serde_json
 
 ---
 
